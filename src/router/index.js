@@ -41,15 +41,18 @@ const router=new VueRouter({
     routes:[
         {
             path:'/home',
-            component:Home
+            component:Home,
+            meta:{show:true}
         },
         {
             path:"/login",
-            component:Login
+            component:Login,
+            meta:{show:false}
         },
         {
             path:"/register",
-            component:Register
+            component:Register,
+            meta:{show:false}
         },
         {
             name:'HeaderSearch',
@@ -60,22 +63,26 @@ const router=new VueRouter({
                   categoryName:route.query.categoryName,
                   category1Id:route.query.categoryId,
                 }
-            }
+            },
+            meta:{show:true}
         },
         {
             path:"/addcartsuccess",
             name:'addcartsuccess',
             component:AddCartSuccess,
+            meta:{show:true}
         },
         {
             path:'/shopcart',
             name:'shopcart',
-            component:ShopCart
+            component:ShopCart,
+            meta:{show:true}
         },
         {
             // params传参
             path:'/detail/:skuid',
-            component:Detail
+            component:Detail,
+            meta:{show:true}
         },
         // 重定向  在项目跑起来的时候，访问/,立马让他定向回到首页
         {
