@@ -32,7 +32,6 @@
               </div>
               <button class="btn" @click.prevent="UserLogin()">登&nbsp;&nbsp;录</button>
             </form>
-
             <div class="call clearFix">
               <ul>
                 <li><img src="./images/qq.png" alt=""></li>
@@ -70,8 +69,8 @@
     name: 'MyLogin',
     data() {
       return {
-        phone:'',
-        password:''
+        phone:'13700000000',
+        password:'111111'
       }
     },
     methods:{
@@ -79,8 +78,13 @@
         try {
           const {phone,password}=this;
           (phone&&password)&&await this.$store.dispatch('user/UserLogin',{phone,password})
-          // 登陆成功 跳转到home界面
-          this.$router.push('/home')
+          // 登陆成功 跳转 如果有query 跳到query 没有跳转到home界面
+          // if(this.$route.query.redirect){
+          //   this.$router.push(this.$route.query.redirect)
+          // }else{
+          //   this.$router.push('/home')
+          // }
+          this.$router.push(this.$route.query.redirect || '/home')
         } catch (error) {
           alert(error.message)
         }

@@ -1,8 +1,8 @@
 # vue-project
 
-## Project setup
-```
-npm install
+
+## 尚品汇前端项目  
+## vue+vuex+axios
 ```
 
 ### Compiles and hot-reloads for development

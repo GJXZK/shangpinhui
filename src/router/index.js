@@ -1,17 +1,10 @@
 // 引入vue   引入vue-router
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import routes from './routes'
+import store from '@/store'
 // 使用插件
 Vue.use(VueRouter)
-// 引入路由
-import Home from '@/pages/Home'
-import Login from '@/pages/Login'
-import Register from '@/pages/Register'
-import Search from '@/pages/Search'
-import Detail from '@/pages/Detail'
-import AddCartSuccess from '@/pages/AddCartSuccess'
-import ShopCart from '@/pages/ShopCart'
-
 //重写push replace方法
 //先把VueRouter原型对象的push 先保存一遍
 let originPush = VueRouter.prototype.push;
@@ -37,63 +30,44 @@ VueRouter.prototype.replace=function(location,resolve,reject){
 
 // 配置路由
 const router=new VueRouter({
-    // 配置路由
-    routes:[
-        {
-            path:'/home',
-            component:Home,
-            meta:{show:true}
-        },
-        {
-            path:"/login",
-            component:Login,
-            meta:{show:false}
-        },
-        {
-            path:"/register",
-            component:Register,
-            meta:{show:false}
-        },
-        {
-            name:'HeaderSearch',
-            path:"/search/:keyword?",
-            component:Search,
-            props(route){
-                return {
-                  categoryName:route.query.categoryName,
-                  category1Id:route.query.categoryId,
-                }
-            },
-            meta:{show:true}
-        },
-        {
-            path:"/addcartsuccess",
-            name:'addcartsuccess',
-            component:AddCartSuccess,
-            meta:{show:true}
-        },
-        {
-            path:'/shopcart',
-            name:'shopcart',
-            component:ShopCart,
-            meta:{show:true}
-        },
-        {
-            // params传参
-            path:'/detail/:skuid',
-            component:Detail,
-            meta:{show:true}
-        },
-        // 重定向  在项目跑起来的时候，访问/,立马让他定向回到首页
-        {
-            path:'*',
-            redirect:'/home'
-        }
-
-    ],
+    routes,
     // 进入一个新的界面  把界面的y轴调为零  即回到顶部
     scrollBehavior(){
         return {y:0}
+    }
+});
+// 路由导航  全局前置守卫
+router.beforeEach(async (to,from,next)=>{
+    // 首先获取token  如果登录了就会有token
+    let token=window.localStorage.getItem('TOKEN')
+    if(token){
+        // 如果token存在就不能再跳转到登陆界面
+        if(to.path=='/login'){
+            next('/')
+        }else{
+            // 有用户信息就放行
+            if(store.state.user.userInfo.name){
+                next()
+            }else{
+                // 如果没有 获取用户信息
+                try {
+                    await store.dispatch('user/getUserInfo')
+                    next()
+                } catch (error) {
+                    // 有token但是获取不到信息说明token失效了  要重新登录
+                    await store.dispatch('user/UserLogout')
+                    next('/login')
+                }
+            }
+        }
+    }else{
+        // 没有token  未登录 
+        let toPath=to.path
+        if(toPath.indexOf('/trade')!=-1 || toPath.indexOf('/pay')!=-1 || toPath.indexOf('/center')!=-1){
+            next('/login?redirect='+toPath)
+        }else{
+            next()
+        }
     }
 })
 export default router;

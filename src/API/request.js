@@ -19,6 +19,12 @@ const requests=axios.create({
 requests.interceptors.request.use((config)=>{
     if(store.state.detail.uuid_token){
         config.headers.userTempId=store.state.detail.uuid_token
+        
+    }
+    // 携带token
+    if(window.localStorage.getItem('TOKEN')){
+        // config.headers.token=store.state.user.token || ''
+        config.headers.token=window.localStorage.getItem('TOKEN') || ''
     }
     // 进度条开始
     nProgress.start();

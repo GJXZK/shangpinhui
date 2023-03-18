@@ -6,16 +6,20 @@
       <div class="container">
         <div class="loginList">
           <p>尚品汇欢迎您！</p>
-          <p>
+          <p v-if="!userName">
             <span>请</span>
             <!-- <a href="###">登录</a> -->
-            <router-link to="/login">登录</router-link>
+            <router-link to="/login">登录 </router-link>
             
             <router-link to="/register">免费注册</router-link>
           </p>
+          <p v-if="userName">
+            <a >{{userName }} |</a>
+            <a class="register" @click="UserLogout()"> 退出登录</a>
+          </p>
         </div>
         <div class="typeList">
-          <a href="###">我的订单</a>
+          <router-link to="/center">我的订单</router-link>
           <router-link to="/shopcart">我的购物车</router-link>
           <router-link to="/home">我的尚品汇</router-link>
           <a href="###">尚品汇会员</a>
@@ -63,6 +67,11 @@ export default {
       keyword:'',
     }
   },
+  computed:{
+    userName(){
+      return this.$store.state.user.userInfo.name;
+    }
+  },
   methods: {
     goSearch(){
       // if(this.$route.query){
@@ -79,7 +88,17 @@ export default {
         query:this.$route.query
       });
     },
-    // 清理keyword
+    // 退出登录
+    async UserLogout(){
+      try {
+        await this.$store.dispatch('user/UserLogout')
+        // 如果退出成功 回到首页
+        this.$router.push('/home')
+      } catch (error) {
+        alert(error.message)
+      }
+      
+    }
   },
   mounted(){
     this.$bus.$on('cleanKeyword',()=>{

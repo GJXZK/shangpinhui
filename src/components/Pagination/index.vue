@@ -21,38 +21,38 @@
 </template>
 
 <script>
-export default {
-  name: "myPagination",
-  props: ["pageNo", "pageSize", "total", "continues"],
-  computed: {
-    // 总共有多少页
-    totalPage() {
-      // 向上取整
-      return Math.ceil(this.total / this.pageSize);
-    },
-    // 计算出连续的页码的起始数据与结束数据，连续的数据 至少五个
-    // 不正常相信 总页数没有连续页码多
-    startNumAndEndNum() {
-      let start = 0,end = 0;
-      if (this.continues > this.totalPage) {
-        start = 1;
-        end = this.totalPage;
-      }else{
-        // 正常现象 连续页码5个以上
-        start = this.pageNo- parseInt(this.continues/2);
-        end = this.pageNo + parseInt(this.continues/2);
-        if(start < 1){
-            start = 1;
-            end = this.continues;
+  export default {
+    name: "myPagination",
+    props: ["pageNo", "pageSize", "total", "continues"],
+    computed: {
+      // 总共有多少页
+      totalPage() {
+        // 向上取整
+        return Math.ceil(this.total / this.pageSize);
+      },
+      // 计算出连续的页码的起始数据与结束数据，连续的数据 至少五个
+      // 不正常相信 总页数没有连续页码多
+      startNumAndEndNum() {
+        let start = 0,end = 0;
+        if (this.continues > this.totalPage) {
+          start = 1;
+          end = this.totalPage;
+        }else{
+          // 正常现象 连续页码5个以上
+          start = this.pageNo- parseInt(this.continues/2);
+          end = this.pageNo + parseInt(this.continues/2);
+          if(start < 1){
+              start = 1;
+              end = this.continues;
+          }
+          if(end > this.totalPage){
+              end = this.totalPage;
+          }
         }
-        if(end > this.totalPage){
-            end = this.totalPage;
-        }
-      }
-      return {start,end}
+        return {start,end}
+      },
     },
-  },
-};
+  };
 </script>
 
 <style lang="less" scoped>
